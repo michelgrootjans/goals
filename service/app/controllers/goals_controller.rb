@@ -1,10 +1,18 @@
 class GoalsController < ApplicationController
+  layout nil
+  skip_before_action :verify_authenticity_token
+
   before_action :set_goal, only: [:show, :edit, :update, :destroy]
 
   # GET /goals
   # GET /goals.json
   def index
     @goals = Goal.all
+    html = render_to_string
+    json = {'html' => html}.to_json
+    callback = params[:callback]
+    jsonp = "#{callback}(#{json})"
+    render plain: jsonp, content_type: 'text/javascript'
   end
 
   # GET /goals/1
